@@ -84,7 +84,7 @@ class LoginViewModel @Inject constructor(
 }
 
 data class LoginUiState(
-    val host: String = "",
+    val host: String = "your-server.com",
     val port: String = "80",
     val username: String = "",
     val password: String = "",

@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.room.Room
 import com.kybers.streampro.data.local.StreamDatabase
+import com.kybers.streampro.data.remote.DynamicUrlInterceptor
 import com.kybers.streampro.data.remote.XtreamApi
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -43,8 +44,9 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(): OkHttpClient {
+    fun provideOkHttpClient(dynamicUrlInterceptor: DynamicUrlInterceptor): OkHttpClient {
         return OkHttpClient.Builder()
+            .addInterceptor(dynamicUrlInterceptor)
             .addInterceptor(HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BODY
             })
