@@ -14,7 +14,12 @@ class DynamicUrlInterceptor @Inject constructor() : Interceptor {
     private var hostUrl: String? = null
     
     fun updateBaseUrl(host: String, port: String) {
-        hostUrl = "http://$host:$port/"
+        // Check if host already contains protocol to avoid duplication
+        hostUrl = if (host.startsWith("http://") || host.startsWith("https://")) {
+            "$host:$port/"
+        } else {
+            "http://$host:$port/"
+        }
         Log.d("DynamicUrlInterceptor", "Base URL updated to: $hostUrl")
     }
     
