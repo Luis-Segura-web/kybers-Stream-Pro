@@ -6,6 +6,7 @@ import org.junit.Assert.*
 /**
  * Test simple para verificar que DynamicUrlInterceptor 
  * maneja correctamente los hosts que ya incluyen el protocolo
+ * y construye las URLs correctamente sin errores de query string
  * Esto corrige el error del log donde aparecía "http://http://gzytv.vip:8880/"
  */
 class DynamicUrlInterceptorSimpleTest {
