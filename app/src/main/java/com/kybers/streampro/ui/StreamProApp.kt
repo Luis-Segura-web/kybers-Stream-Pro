@@ -25,9 +25,10 @@ fun StreamProApp() {
     val coroutineScope = rememberCoroutineScope()
     
     // Determine start destination based on login status
-    val startDestination = when (credentialsState) {
+    val startDestination = when (val state = credentialsState) {
         is NavigationState.Loading -> "login"
-        is NavigationState.Success -> if (credentialsState.credentials.isLoggedIn) "home" else "login"
+        is NavigationState.Success -> if (state.credentials.isLoggedIn) "home" else "login"
+        else -> "login"
     }
     
     NavHost(

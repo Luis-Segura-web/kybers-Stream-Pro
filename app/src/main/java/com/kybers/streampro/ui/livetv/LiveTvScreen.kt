@@ -67,7 +67,7 @@ fun LiveTvScreen(
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = uiState.error,
+                        text = uiState.error ?: "Unknown error",
                         color = MaterialTheme.colorScheme.error,
                         style = MaterialTheme.typography.bodyLarge
                     )

@@ -79,7 +79,7 @@ fun LoginScreen(
 
         if (uiState.error != null) {
             Text(
-                text = uiState.error,
+                text = uiState.error ?: "Unknown error",
                 color = MaterialTheme.colorScheme.error,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
