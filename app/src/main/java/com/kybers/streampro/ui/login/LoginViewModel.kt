@@ -2,6 +2,7 @@ package com.kybers.streampro.ui.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kybers.streampro.data.local.PreferencesManager
 import com.kybers.streampro.domain.usecase.LoginUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,11 +13,26 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val loginUseCase: LoginUseCase
+    private val loginUseCase: LoginUseCase,
+    private val preferencesManager: PreferencesManager
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
+
+    init {
+        // Load saved credentials
+        viewModelScope.launch {
+            preferencesManager.loginCredentials.collect { credentials ->
+                _uiState.value = _uiState.value.copy(
+                    host = credentials.host,
+                    port = credentials.port,
+                    username = credentials.username,
+                    password = credentials.password
+                )
+            }
+        }
+    }
 
     fun updateHost(host: String) {
         _uiState.value = _uiState.value.copy(host = host)
@@ -50,6 +66,10 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             loginUseCase(state.host, state.port, state.username, state.password)
                 .onSuccess { (userInfo, serverInfo) ->
+                    // Save credentials
+                    preferencesManager.saveLoginCredentials(
+                        state.host, state.port, state.username, state.password
+                    )
                     _uiState.value = state.copy(isLoading = false, error = null)
                     onSuccess()
                 }

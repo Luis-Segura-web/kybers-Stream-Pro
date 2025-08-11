@@ -9,62 +9,52 @@ import androidx.compose.material.icons.filled.Tv
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-// import com.kybers.streampro.R
+import com.kybers.streampro.domain.model.LiveStream
+import com.kybers.streampro.ui.livetv.LiveTvScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen() {
+fun HomeScreen(onStreamSelected: (LiveStream) -> Unit) {
     var selectedTab by remember { mutableIntStateOf(0) }
 
     Column(modifier = Modifier.fillMaxSize()) {
         TopAppBar(
-            title = { Text("Kybers Stream Pro") } // stringResource(R.string.app_name)) }
+            title = { Text("Kybers Stream Pro") }
         )
 
         TabRow(selectedTabIndex = selectedTab) {
             Tab(
                 selected = selectedTab == 0,
                 onClick = { selectedTab = 0 },
-                text = { Text("Live TV") }, // stringResource(R.string.live_tv)) },
+                text = { Text("Live TV") },
                 icon = { Icon(Icons.Default.LiveTv, contentDescription = null) }
             )
             Tab(
                 selected = selectedTab == 1,
                 onClick = { selectedTab = 1 },
-                text = { Text("Movies") }, // stringResource(R.string.vod)) },
+                text = { Text("Movies") },
                 icon = { Icon(Icons.Default.Movie, contentDescription = null) }
             )
             Tab(
                 selected = selectedTab == 2,
                 onClick = { selectedTab = 2 },
-                text = { Text("Series") }, // stringResource(R.string.series)) },
+                text = { Text("Series") },
                 icon = { Icon(Icons.Default.Tv, contentDescription = null) }
             )
             Tab(
                 selected = selectedTab == 3,
                 onClick = { selectedTab = 3 },
-                text = { Text("Favorites") }, // stringResource(R.string.favorites)) },
+                text = { Text("Favorites") },
                 icon = { Icon(Icons.Default.Favorite, contentDescription = null) }
             )
         }
 
         when (selectedTab) {
-            0 -> LiveTvContent()
+            0 -> LiveTvScreen(onStreamSelected = onStreamSelected)
             1 -> VodContent()
             2 -> SeriesContent()
             3 -> FavoritesContent()
         }
-    }
-}
-
-@Composable
-private fun LiveTvContent() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = androidx.compose.ui.Alignment.Center
-    ) {
-        Text("Live TV content will be implemented here")
     }
 }
 
