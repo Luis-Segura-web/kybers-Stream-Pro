@@ -62,4 +62,4 @@ output.json
 /schemas/
 
 # Local configuration file
-local.properties
+local.propertiesMETA-INF/

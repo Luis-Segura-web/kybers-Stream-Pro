@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
+    <!-- Habilita tráfico en claro para todos los dominios (necesario por hosts dinámicos). 
+         Si deseas restringirlo, elimina este bloque y lista dominios específicos en domain-config. -->
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+            <certificates src="user" />
+        </trust-anchors>
+    </base-config>
+
+    <!-- Ejemplo de dominio explícito permitido -->
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">localhost</domain>
-        <!-- Add your IPTV provider domains here -->
+        <!-- Puedes añadir dominios concretos aquí si restringes el base-config -->
+        <!-- <domain includeSubdomains="true">gzytv.vip</domain> -->
     </domain-config>
 </network-security-config>

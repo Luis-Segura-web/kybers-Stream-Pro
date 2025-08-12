@@ -1,5 +1,6 @@
 package com.kybers.streampro.ui.navigation
 
+import android.net.Uri
 import androidx.compose.runtime.*
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
@@ -32,7 +33,34 @@ class NavigationViewModel @Inject constructor(
 
     suspend fun getStreamUrl(streamId: Int): String {
         val credentials = preferencesManager.loginCredentials.first()
-        return "http://${credentials.host}:${credentials.port}/live/${credentials.username}/${credentials.password}/$streamId.m3u8"
+
+        // Sanea host y puerto (trim, quitar esquema/ruta, evitar puerto duplicado)
+        val rawHost = credentials.host.trim()
+        val hasHttps = rawHost.startsWith("https://", ignoreCase = true)
+        val hasHttp = rawHost.startsWith("http://", ignoreCase = true)
+
+        var withoutScheme = rawHost
+            .removePrefix("https://")
+            .removePrefix("http://")
+            .trim()
+            .trimEnd('/')
+
+        val slashIdx = withoutScheme.indexOf('/')
+        if (slashIdx >= 0) withoutScheme = withoutScheme.substring(0, slashIdx)
+
+        val hasPortInHost = withoutScheme.contains(":")
+        val cleanPort = credentials.port.trim().removePrefix(":")
+        val authority = if (hasPortInHost || cleanPort.isEmpty()) withoutScheme else "$withoutScheme:$cleanPort"
+        val scheme = when {
+            hasHttps -> "https"
+            hasHttp -> "http"
+            else -> "http"
+        }
+
+        val safeUser = Uri.encode(credentials.username)
+        val safePass = Uri.encode(credentials.password)
+
+        return "$scheme://$authority/live/$safeUser/$safePass/$streamId.m3u8"
     }
 }
 
