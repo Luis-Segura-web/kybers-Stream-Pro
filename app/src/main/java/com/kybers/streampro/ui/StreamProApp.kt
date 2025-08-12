@@ -1,6 +1,7 @@
 package com.kybers.streampro.ui
 
 import androidx.compose.runtime.*
+import android.net.Uri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavType
@@ -48,7 +49,8 @@ fun StreamProApp() {
         composable("home") {
             HomeScreen(
                 onStreamSelected = { stream ->
-                    navController.navigate("player/${stream.streamId}/${stream.name}")
+                    val encodedName = Uri.encode(stream.name)
+                    navController.navigate("player/${stream.streamId}/$encodedName")
                 }
             )
         }
@@ -61,7 +63,7 @@ fun StreamProApp() {
             )
         ) { backStackEntry ->
             val streamId = backStackEntry.arguments?.getInt("streamId") ?: 0
-            val streamName = backStackEntry.arguments?.getString("streamName") ?: ""
+            val streamName = backStackEntry.arguments?.getString("streamName")?.let { Uri.decode(it) } ?: ""
             
             var streamUrl by remember { mutableStateOf("") }
             
